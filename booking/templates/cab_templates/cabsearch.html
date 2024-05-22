@@ -1,0 +1,876 @@
+{% extends 'base.html' %}
+{% block cabs %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers On Cab Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+
+        /*  search form styles */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+
+        }
+
+        #searchForm {
+            /* background-color: #fff; */
+            background-image: url('https://images.unsplash.com/photo-1715073365410-e0045cee33ac?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDU0fGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D');
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        label {
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: black;
+            width: 150px;
+            text-align: right;
+            /* padding-right: 10px;
+            margin-right: 10px; */
+        }
+
+        @media only screen and (max-width: 600px) {
+            /* Adjust styles for mobile view */
+            label {
+               
+                text-align: left;
+                margin-right: 0;
+                padding-right: 0;
+            }
+            input[type="number"]{
+              margin-bottom: 10px;
+              width: 100%;
+            }
+
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        select {
+            width: 250px;
+            height: 40px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 9px;
+            border-color: #007bff;
+            cursor: pointer;
+           
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style for icons */
+        /* .icon {
+            margin-right: 10px;
+        }
+
+        .swap-icon {
+            cursor: pointer;
+            color: #007bff;
+            font-size: 1.2em;
+            margin: 0 5px;
+        } */
+        .swap-icon {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 1.2em;
+    /* margin: 0 5px; */
+  /* Move the icon to the right */
+}
+
+.vertical-swap-icon {
+    display: none; /* Initially hide the vertical swap icon */
+    cursor: pointer;
+    color: #007bff;
+    font-size: 1.2em; 
+    float: right;
+ 
+}
+
+@media only screen and (max-width: 600px) {
+    /* Adjust styles for mobile view */
+    .swap-icon {
+        display: none; /* Hide horizontal swap icon in mobile view */
+    }
+
+    .vertical-swap-icon {
+        display: inline-block; /* Show vertical swap icon in mobile view */
+        transform: rotate(90deg); /* Rotate the icon vertically */
+        /* margin: 5px auto; 
+        margin-left: auto; */
+    }
+}
+
+        /* Style for search options */
+        .search-options {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            color: black;
+            font-style:bold;
+            /* Allow items to wrap to the next line */
+        }
+
+        .search-option {
+            padding: 10px 20px;
+            border: 1px solid #302e2e;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            /* Make each option take equal space */
+            margin-bottom: 10px;
+            /* Add some space between each option */
+            max-width: 200px;
+            /* Limit the maximum width of each option */
+            text-align: center;
+            /* Center align the text */
+        }
+
+        .search-option.custom-one-way.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .search-option.outstation-round-trip.active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .search-option.airport-transfers.active {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .search-option.hourly-rentals.active {
+            background-color: #6f42c1;
+            color: white;
+        }
+
+        /* Style for forms */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @media only screen and (max-width: 600px) {
+            /* Adjust styles for mobile view */
+            input[type="text"],
+            input[type="date"],
+            input[type="time"],
+            select {
+                width: 100%;
+                margin-right: 0;
+            }
+            input[type="number"]{
+              width: 100%;
+              margin-right: 0;
+
+            }
+
+            input[type="submit"] {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .search-option {
+                max-width: 100%;
+                margin-right: 0;
+            }
+        }
+        @media only screen and (max-width: 768px) {
+    /* Target mobile devices with a maximum width of 768px */
+    #hourlyRentalsForm input[type="number"],
+    #hourlyRentalsForm input[type="text"],
+    #hourlyRentalsForm input[type="date"],
+    #hourlyRentalsForm input[type="time"] {
+        width: 100%; /* Adjust the width as needed */
+    }
+}
+
+/*    offer cards */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative; /* Position relative for absolute positioning of icons */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .carousel {
+            overflow-x: hidden;
+            /* Remove position relative from carousel to allow icons to be positioned outside */
+        }
+
+        .carousel-icons {
+            display: flex;
+            justify-content:right;
+            gap: 20px;
+            margin-top: -30px;
+        }
+
+        .carousel-btn {
+            background-color: rgb(71, 71, 71);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgb(48, 47, 47);
+        }
+
+        .carousel-container {
+            display: flex;
+            scroll-snap-type: x mandatory;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+         .custom-card {
+            flex: 0 0 270px;
+            /* width: 400px; */
+            margin-right: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            /* background-image:url(data:image/jpeg;base64,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); */
+            /* background-image: url(https://th.bing.com/th/id/OIP.bNiGGYd2pA2wKe9gNlslVwHaKe?rs=1&pid=ImgDetMain); */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+
+            background-image: url(https://th.bing.com/th/id/OIP.Gl7FuTs3Yckd9gbrg_OuNQHaHa?pid=ImgDet&w=182&h=182&c=7);
+            height: 355px;
+         
+        }
+
+/* 
+        .custom-card img {
+            width: 270px;
+            height: 150px;
+        } */
+        /* .custom-card img {
+    flex: 0 0 70px;
+    height: 150px;
+    object-fit: cover;
+} */
+.custom-card img{
+    width: 270px;
+    height: 200px;
+}
+
+        .custom-card-content {
+            padding: 15px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .title-card {
+            /* font-size: 1.2em; */
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .description-card {
+            margin-bottom: 10px;
+            color: black;
+        }
+     
+        .custom-code {
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: auto;
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    background-color: #007bff;
+    margin-bottom: 6px;
+    transition: background-color 0.3s; /* Smooth transition effect */
+
+}
+
+.custom-code:hover {
+    color: black; /* New text color on hover */
+}
+
+@media only screen and (max-width: 768px) {
+    .carousel-icons {
+        display: none;
+    }
+}
+
+
+
+/* @media only screen and (max-width: 768px) and (max-resolution: 200dpi),
+       only screen and (max-width: 768px) and (max-resolution: 300dpi) {
+    .carousel-container {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .custom-card {
+        flex: 0 0 100%;
+        margin-right: 0;
+    }
+} */
+
+@media only screen and (max-width: 768px) and (max-resolution: 200dpi),
+       only screen and (max-width: 768px) and (max-resolution: 300dpi) {
+        .custom-card {
+           max-width: 160px;
+           max-height: 200px;
+       }
+       .custom-card img{
+        width:160px ;
+        max-height: 90px;
+       }
+       .title-card {
+            font-size:11px;
+            margin-top: -10px;
+            
+        }
+
+        .description-card {
+          font-size: 8px;
+        }
+        .custom-code {
+          font-size: 8px;
+          padding: 5px;
+        }
+      }
+
+
+
+/*       
+          .card-1 { background-color: #ffcccc; } 
+        .card-2 { background-color: #ccffcc; } 
+        .card-3 { background-color: #ccccff; } 
+        .card-4 { background-color: #ffeecc; } 
+        .card-5 { background-color: #ccffee; } 
+        .card-6 { background-color: #f0f0ff; }
+        .card-7 { background-color: #ccffcc; } 
+        .card-8 { background-color: #ccccff; }   */
+      
+
+/*    faqs and why choose content */
+      h4 {
+  color: brown;
+  font-size:25px;
+  font-weight: bold;
+  margin-top: 10px; 
+  margin-bottom: 10px;
+}
+#lists {
+  font-size: 16px;
+  margin-right: -100px;
+  padding-top: 5px; 
+  /* padding-bottom: 5px;  */
+  width: 100%; 
+  text-align: justify;
+  overflow-wrap: break-word;
+}
+.faq-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 80%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: center;
+  left: 50%;
+}
+
+.faq-item {
+  border-radius: 10px;
+  background-color: white;
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
+  overflow: hidden;
+}
+
+.faq-title {
+  
+ /* background-color: #f3e8f7; */
+ background-color: #cfc2d1;
+  font-size: 18px;
+  font-weight: bold;
+  color: rgb(51, 49, 49);
+  cursor: pointer;
+  padding: 15px;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.faq-title:hover {
+  background-color:#efd9f7;
+}
+.faq-title::after {
+  content: '+';
+  color: #333;
+  margin-left: 10px;
+}
+
+.faq-title.open::after {
+  content: '-';
+}
+
+.faq-content {
+  display: none;
+  padding: 15px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.faq-content.active {
+  display: block;
+}
+
+.container-2{
+  background-color:#f8f8f8;
+   width: 1323px;
+}
+   
+
+
+
+
+ 
+
+
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <form id="searchForm">
+            <div class="search-options">
+                <div class="search-option custom-one-way active" onclick="showForm('customOneWayForm', this)">
+                    Custom One Way
+                </div>
+                <div class="search-option outstation-round-trip" onclick="showForm('outstationRoundTripForm', this)">
+                    Outstation Round Trip
+                </div>
+                <div class="search-option airport-transfers" onclick="showForm('airportTransfersForm', this)">
+                    Airport Transfers
+                </div>
+                <div class="search-option hourly-rentals" onclick="showForm('hourlyRentalsForm', this)">
+                    Hourly Rentals
+                </div>
+            </div>
+            <div id="customOneWayForm" class="form-section active">
+                <!-- Custom One Way Form Fields -->
+                <label for="fromCityInput"><i class="fas fa-map-marker-alt icon"> Pickup City: </i></label>
+                <input type="text" id="fromCityInput" name="fromCity" placeholder="From City">
+                <i class="fas fa-exchange-alt swap-icon" onclick="swapFields('fromCityInput', 'toCityInput')"></i>
+                <i class="fas fa-exchange-alt vertical-swap-icon" onclick="swapFields('fromCityInput', 'toCityInput')"></i>
+                
+                <label for="toCityInput"><i class="fas fa-map-marker-alt icon"> Drop-off City: </i></label>
+                <input type="text" id="toCityInput" name="toCity" placeholder="To City">
+                <label for="departureDate"><i class="fas fa-calendar-alt icon"> Departure: </i></label>
+                <input type="date" id="departureDate" name="departureDate">
+                <label for="pickupTime" style="margin-left: 30px;"><i class="fas fa-clock icon"> Pickup Time: </i></label>
+                <input type="time" id="pickupTime" name="pickupTime">
+            </div>
+            <div id="outstationRoundTripForm" class="form-section">
+                <!-- Outstation Round Trip Form Fields -->
+                <label for="fromCityInputRoundTrip"><i class="fas fa-map-marker-alt icon"> Pickup City: </i></label>
+                <input type="text" id="fromCityInputRoundTrip" name="fromCity" placeholder="From City">
+                <i class="fas fa-exchange-alt swap-icon" onclick="swapFields('fromCityInput', 'toCityInput')"></i>
+                <i class="fas fa-exchange-alt vertical-swap-icon" onclick="swapFields('fromCityInput', 'toCityInput')"></i>
+                
+                <label for="toCityInputRoundTrip"><i class="fas fa-map-marker-alt icon"> Drop-off City: </i></label>
+                <input type="text" id="toCityInputRoundTrip" name="toCity" placeholder="To City">
+                <label for="departureDateRoundTrip"><i class="fas fa-calendar-alt icon"> Departure: </i></label>
+                <input type="date" id="departureDateRoundTrip" name="departureDate">
+                <label for="returnDateRoundTrip" style="margin-left:30px;"><i class="fas fa-calendar-alt icon"> Return: </i></label>
+                <input type="date" id="returnDateRoundTrip" name="returnDate">
+                <label for="pickupTimeRoundTrip"><i class="fas fa-clock icon"> Pickup Time: </i></label>
+                <input type="time" id="pickupTimeRoundTrip" name="pickupTime">
+                <label for="dropTimeRoundTrip" style="margin-left:30px;"><i class="fas fa-clock icon"> Drop Time: </i></label>
+                <input type="time" id="dropTimeRoundTrip" name="dropTime">
+            </div>
+            <div id="airportTransfersForm" class="form-section">
+                <!-- Airport Transfers Form Fields -->
+                <label for="cityInput"><i class="fas fa-city icon"> City Name: </i></label>
+                <input type="text" id="cityInput" name="city" placeholder="City Name">
+                <i class="fas fa-exchange-alt swap-icon" onclick="swapFields('cityInput', 'airportInput')"></i>
+                <i class="fas fa-exchange-alt vertical-swap-icon" onclick="swapFields('cityInput', 'airportInput')"></i>
+                
+                
+                <label for="airportInput"><i class="fas fa-plane icon"> Airport Name: </i></label>
+                <input type="text" id="airportInput" name="airport" placeholder="Airport Name">
+                <label for="departureDateAirport"><i class="fas fa-calendar-alt icon"> Departure: </i></label>
+                <input type="date" id="departureDateAirport" name="departureDate">
+                <label for="pickupTimeAirport" style="margin-left:30px;"><i class="fas fa-clock icon"> Pickup Time: </i></label>
+                <input type="time" id="pickupTimeAirport" name="pickupTime">
+            </div>
+            <div id="hourlyRentalsForm" class="form-section">
+              <!-- Hourly Rentals Form Fields -->
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+                  <div style="flex: 0 0 48%;">
+                      <label for="hoursInput"><i class="fas fa-clock icon"> Rental Duration: </i></label>
+                      <input type="number" id="hoursInput" name="hours" placeholder="Enter rental duration in hours" style="width: 240px; height: 40px;">
+                  </div>
+                  <div style="flex: 0 0 48%;">
+                      <label for="pickupLocation" style="margin-bottom: 10px;"><i class="fas fa-map-marker-alt icon"> Pickup Location: </i></label>
+                      <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter pickup location" style="width: 240px; height: 40px;">
+                  </div>
+              </div>
+          
+              <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                  <div style="flex: 0 0 48%;">
+                      <label for="pickupDateHourly"><i class="fas fa-calendar-alt icon"> Pickup Date: </i></label>
+                      <input type="date" id="pickupDateHourly" name="pickupDate">
+                  </div>
+                  <div style="flex: 0 0 48%;">
+                      <label for="pickupTimeHourly"><i class="fas fa-clock icon"> Pickup Time: </i></label>
+                      <input type="time" id="pickupTimeHourly" name="pickupTime">
+                  </div>
+              </div>
+          </div>
+          
+              <div>        
+                <center><input type="submit" value="Search"></center>
+              </div>
+        
+          
+
+        </form>
+    </div>
+    <script>
+        function showForm(formId, clickedOption) {
+            var forms = document.querySelectorAll('.form-section');
+            var options = document.querySelectorAll('.search-option');
+
+            forms.forEach(function (form) {
+                form.classList.remove('active');
+            });
+            options.forEach(function (option) {
+                option.classList.remove('active');
+            });
+
+            document.getElementById(formId).classList.add('active');
+            clickedOption.classList.add('active');
+        }
+    </script>
+    <script>
+        function swapFields(firstFieldId, secondFieldId) {
+            var firstFieldValue = document.getElementById(firstFieldId).value;
+            var secondFieldValue = document.getElementById(secondFieldId).value;
+
+            document.getElementById(firstFieldId).value = secondFieldValue;
+            document.getElementById(secondFieldId).value = firstFieldValue;
+        }
+    </script>
+    <div class="container">
+        <h1>Offers On Cab Booking</h1>
+        <div class="carousel-icons">
+            <button class="carousel-btn prev-btn">&#10094;</button>
+            <button class="carousel-btn next-btn">&#10095;</button>
+        </div><br>
+        <div class="carousel">
+            <div class="carousel-container">
+                {% for card in res %}
+                <div class="custom-card card-{{ forloop.counter }}">
+                    {% if card.photo %}
+                    <img src="{{ card.photo }}" class="card-img">
+                    {% endif %}
+                    <div class="custom-card-content">
+                        <a href="{{ card.Link }}" class="card-link">
+                            <div class="title-card">{{ card.title }}</div>
+                            <div class="description-card">{{ card.description }}</div>
+                            <p><span class="custom-code">{{ card.code }}</span></p>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+           
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var scrollInterval;
+            var cardWidth = $('.custom-card').outerWidth(true); // Get the width of a single card including margin
+            var numCards = $('.carousel-container').children('.custom-card').length;
+            var clonedCards = $('.carousel-container').children('.custom-card').clone();
+            $('.carousel-container').append(clonedCards);
+
+            function startScrolling() {
+                if (!scrollInterval) {
+                    scrollInterval = setInterval(function () {
+                        $('.carousel-container').animate({
+                            scrollLeft: '+=' + cardWidth
+                        }, 'slow', function () {
+                            if ($('.carousel-container').scrollLeft() >= numCards * cardWidth) {
+                                $('.carousel-container').scrollLeft(0);
+                            }
+                        });
+                    }, 3000); // Adjust the interval as needed
+                }
+            }
+
+            function stopScrolling() {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+
+            startScrolling();
+
+            // Manual navigation
+            $('.prev-btn').click(function () {
+                stopScrolling();
+                $('.carousel-container').animate({
+                    scrollLeft: '-=' + cardWidth
+                }, 'slow', function () {
+                    var scrollPosition = $('.carousel-container').scrollLeft();
+                    if (scrollPosition <= 0) {
+                        $('.carousel-container').scrollLeft(numCards * cardWidth);
+                    }
+                    startScrolling(); // Restart automatic scrolling after manual scroll
+                });
+            });
+
+            $('.next-btn').click(function () {
+                stopScrolling();
+                $('.carousel-container').animate({
+                    scrollLeft: '+=' + cardWidth
+                }, 'slow', function () {
+                    var scrollPosition = $('.carousel-container').scrollLeft();
+                    if (scrollPosition >= numCards * cardWidth) {
+                        $('.carousel-container').scrollLeft(0);
+                    }
+                    startScrolling(); // Restart automatic scrolling after manual scroll
+                });
+            });
+
+            // Pause automatic scrolling when tab is not visible
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') {
+                    stopScrolling();
+                } else {
+                    startScrolling();
+                }
+            });
+        });
+
+    </script>
+
+
+<br>
+    
+<center><h1>Why Choose Us ?</h1></center>
+<div class=" card1" style=" border-radius: 10px; border:2px solid rgb(223, 194, 158); margin:0 auto; width:100%; background-color: #fff;padding: 10px 20px; margin-bottom: 20px; max-width: 1200px;">
+  <div class="">
+    <div class="title1">
+      <h4>{{ k3.0.ctitle }}</h4>
+    </div>
+    <ul>
+      {% for item in k3 %}
+        {% if item.ctitle == k3.0.ctitle %}
+          <li id="lists" style="padding-top:-20px;">{{ item.heading1 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="card2" style=" border-radius: 10px; border:2px solid rgb(223, 194, 158); margin:0 auto; width:100%; background-color: #fff;padding: 10px 20px; margin-bottom: 20px; max-width: 1200px;">
+  <div class="">
+    <div class="title2">
+      <h4>{{ k3.5.ctitle }}</h4>
+    </div>
+    <ul>
+      {% for item in k3 %}
+        {% if item.ctitle == k3.5.ctitle %}
+          <li id="lists" style="padding-top:-0px;">{{ item.heading1 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="card3" style=" border-radius: 10px; border:2px solid rgb(223, 194, 158); margin:0 auto; width:100%; background-color: #fff;padding: 10px 20px; margin-bottom: 20px; max-width: 1200px;">
+  <div class="">
+    <div class="title3">
+      <h4>{{ k3.8.ctitle }}</h4>
+    </div>
+    <ul>
+      {% for item in k3 %}
+        {% if item.ctitle == k3.8.ctitle %}
+          <li id="lists" style="padding-top:-0px;">{{ item.heading1 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<div class="card2" style=" border-radius: 10px; border:2px solid rgb(223, 194, 158); margin:0 auto; width:100%; background-color: #fff;padding: 10px 20px; margin-bottom: 20px; max-width: 1200px;">
+  <div class="">
+    <div class="title4">
+      <h4>{{ k3.14.ctitle }}</h4>
+    </div>
+    <ul>
+      {% for item in k3 %}
+        {% if item.ctitle == k3.14.ctitle %}
+          <li id="lists" style="padding-top:-0px;">{{ item.heading1 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="card2" style=" border-radius: 10px; border:2px solid rgb(223, 194, 158); margin:0 auto; width:100%; background-color: #fff;padding: 10px 20px; margin-bottom: 20px; max-width: 1200px;">
+  <div class="">
+    <div class="title5">
+      <h4>{{ k3.16.ctitle }}</h4>
+    </div>
+    <ul>
+      {% for item in k3 %}
+        {% if item.ctitle == k3.16.ctitle %}
+          <li id="lists" style="padding-top:-0px;">{{ item.heading1 }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div><br>
+
+<div class="container">
+  <div>
+     <div class="custom-content-container"> {% for faq_entry in b %}
+      <h1 class="custom-h2">{{ faq_entry.content }}</h1>
+    {% endfor %}
+  </div><br>
+    
+    <div class="faq-container">
+      {% for faq_entry in b %}
+      <div class="faq-item">
+        <h5 class="faq-title" onclick="toggleFAQ(this)">{{ faq_entry.Title }}</h5>
+        <div class="faq-content">
+          <p>{{ faq_entry.description }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <br><br>
+ <script>
+    let openFAQ = null;
+    
+    function toggleFAQ(faq) {
+      const answer = faq.nextElementSibling;
+      const icon = faq.classList;
+    
+      if (openFAQ && openFAQ !== faq) {
+        const prevAnswer = openFAQ.nextElementSibling;
+        const prevIcon = openFAQ.classList;
+        prevAnswer.style.display = "none";
+        prevIcon.remove("open");
+      }
+    
+      if (answer.style.display === "block") {
+        answer.style.display = "none";
+        icon.remove("open");
+        openFAQ = null;
+      } else {
+        answer.style.display = "block";
+        icon.add("open");
+        openFAQ = faq;
+      }
+    }
+    </script>
+</div>
+</div> 
+</div>
+<script>
+function swapFields(firstFieldId, secondFieldId) {
+var firstFieldValue = document.getElementById(firstFieldId).value;
+var secondFieldValue = document.getElementById(secondFieldId).value;
+
+document.getElementById(firstFieldId).value = secondFieldValue;
+document.getElementById(secondFieldId).value = firstFieldValue;
+
+// Check if viewport width is less than or equal to 600px (for mobile view)
+if (window.innerWidth <= 600) {
+    // Toggle the rotation of the swap icon
+    var swapIcon = document.querySelector('.swap-icon');
+    swapIcon.style.transform = swapIcon.style.transform ? '' : 'rotate(90deg)';
+}
+}
+
+</script>
+
+</body>
+
+</html>
+
+{% endblock %} 
